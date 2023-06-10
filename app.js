@@ -2,9 +2,9 @@ const express = require('express')
 const app = express()
 const port = 3000
 const exphbs = require('express-handlebars')
-const mongoose = require('mongoose') // 載入 mongoose
+const mongoose = require('mongoose') 
 const bodyParser = require('body-parser')
-const Todo = require('./models/todo') // 載入 Todo model
+const Todo = require('./models/todo') 
 const methodOverride = require('method-override')
 const routes = require('./routes')
 
