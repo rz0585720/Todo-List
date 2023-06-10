@@ -37,10 +37,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(routes)
 
-// routes settings
-
-
-
 // start server
 app.listen(port, () => {
 	console.log(`Express is running on http://localhost:${port}`)
