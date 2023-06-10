@@ -5,6 +5,7 @@ const exphbs = require('express-handlebars')
 const mongoose = require('mongoose') // 載入 mongoose
 const bodyParser = require('body-parser')
 const Todo = require('./models/todo') // 載入 Todo model
+const methodOverride = require('method-override')
 
 if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config()
@@ -32,12 +33,13 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 // routes settings
 app.get('/', (req, res) => {
 	Todo.find() // 取出 Todo model 裡的所有資料
 		.lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
-		.sort({ name: 'asc' }) // desc→降冪, asc→升冪
+		.sort({ _id: 'asc' }) // desc→降冪, asc→升冪
 		.then(todos => res.render('index', { todos })) // 將資料傳給 index 樣板
 		.catch(error => console.error(error)) // 錯誤處理
 })
@@ -69,7 +71,7 @@ app.get('/todos/:id/edit', (req, res) => {
 		.catch(error => console.log(error))
 })
 
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
 	const id = req.params.id
 	const { name, isDone } = req.body
 	return Todo.findById(id)
@@ -82,7 +84,7 @@ app.post('/todos/:id/edit', (req, res) => {
 		.catch(error => console.log(error))
 })
 
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
 	const id = req.params.id
 	return Todo.findById(id)
 		.then(todo => todo.remove())
