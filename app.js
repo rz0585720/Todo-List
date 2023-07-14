@@ -5,11 +5,15 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config()
+}
+
 const routes = require('./routes')
 const usePassport = require('./config/passport')
 require('./config/mongoose')
 
-const port = 3000
+const port = process.env.PORT
 const app = express()
 
 // template engine
@@ -18,7 +22,7 @@ app.set('view engine', 'hbs')
 
 app.use(
 	session({
-		secret: 'ThisIsMySecret',
+		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: true,
 	})
@@ -31,8 +35,8 @@ app.use(flash())
 app.use((req, res, next) => {
 	res.locals.isAuthenticated = req.isAuthenticated()
 	res.locals.user = req.user
-	res.locals.success_msg = req.flash('success_msg')  
-  res.locals.warning_msg = req.flash('warning_msg')
+	res.locals.success_msg = req.flash('success_msg')
+	res.locals.warning_msg = req.flash('warning_msg')
 	next()
 })
 app.use(routes)
